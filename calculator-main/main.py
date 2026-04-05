@@ -1,45 +1,41 @@
-#Импорт
-from flask import Flask, render_template
-
+from flask import Flask
+import random
 
 app = Flask(__name__)
+facts_list = ["Большинство людей, страдающих технологической зависимостью, испытывают сильный стресс, когда они находятся вне зоны покрытия сети или не могут использовать свои устройства.",
+"Согласно исследованию, проведенному в 2018 году, более 50% людей в возрасте от 18 до 34 лет считают себя зависимыми от своих смартфонов.", "Изучение технологической зависимости является одной из наиболее актуальных областей научных исследований в настоящее время.",
+"Согласно исследованию, проведенному в 2019 году, более 60% людей отвечают на рабочие сообщения в своих смартфонах в течение 15 минут после того, как они вышли с работы.",
+"Один из способов борьбы с технологической зависимостью - это поиск занятий, которые приносят удовольствие и улучшают настроение.",
+"Илон Маск утверждает, что социальные сети созданы для того, чтобы удерживать нас внутри платформы, чтобы мы тратили как можно больше времени на просмотр контента.",
+"Илон Маск также выступает за регулирование социальных сетей и защиту личных данных пользователей. Он утверждает, что социальные сети собирают огромное количество информации о нас, которую потом можно использовать для манипулирования нашими мыслями и поведением.",
+"Социальные сети имеют как позитивные, так и негативные стороны, и мы должны быть более осознанными в использовании этих платформ."]
+money_sides = ["Орёл", "Решка"]
+alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*_+-/=?"
+length = 10
 
-def result_calculate(size, lights, device):
-    #Переменные для энергозатратности приборов
-    home_coef = 100
-    light_coef = 0.04
-    devices_coef = 5   
-    return size * home_coef + lights * light_coef + device * devices_coef 
+@app.route("/")
+def hello_world():
+    return f"""<h1>Привет! Здесь ты можешь узнать пару интересных фактов о технологических зависимостях!<h1>
+    <a href="/random_fact">Посмотреть случайный факт!</a>
+    """
 
-#Первая страница
-@app.route('/')
-def index():
-    return render_template('index.html')
+@app.route("/random_fact")
+def random_fact():
+    return f'<p>{random.choice(facts_list)}</p>'
 
-#Вторая страница
-@app.route('/<size>')
-def lights(size):
-    return render_template(
-                            'lights.html', 
-                            size=size
-                           )
+@app.route("/secret")
+def secret():
+    return f"""<h1>Ты нашёл страницу с броском монеты! Вот результат броска:</h1>
+    <p>{random.choice(money_sides)}</p>
+    """
 
-#Третья страница
-@app.route('/<size>/<lights>')
-def electronics(size, lights):
-    return render_template(
-                            'electronics.html',
-                            size = size, 
-                            lights = lights                           
-                           )
-
-#Расчет
-@app.route('/<size>/<lights>/<device>')
-def end(size, lights, device):
-    return render_template('end.html', 
-                            result=result_calculate(int(size),
-                                                    int(lights), 
-                                                    int(device)
-                                                    )
-                        )
+@app.route("/password")
+def gen_pass():
+    password = ""
+    for i in range(length):
+        symbol = random.choice(alphabet)
+        password += symbol
+    return f"""<h1>Ух ты! Ты нашёл страницу для создания 10-значных паролей! Вот твой пароль:</h1
+    <p>{password}</p>
+    """
 app.run(debug=True)
